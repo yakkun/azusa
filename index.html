@@ -1416,6 +1416,16 @@
 
   <!-- Summary Statistics Grid -->
   <section class="stats-grid">
+    <div class="stat-card" style="border-left: 4px solid var(--azusa-gold);" onclick="openSeatModal()" title="窓枠回避と車窓Tipsを見る（クリックで詳細）">
+      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: var(--azusa-gold);">
+        💺
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">窓枠回避 おすすめ席</span>
+        <span class="stat-value" id="stat-seat-val" style="color: var(--azusa-gold);"><strong style="color: var(--azusa-gold);">奇数席</strong>(下り) <span style="opacity: 0.65; font-size: 0.82em; font-weight: 600;">/ 偶数(上)</span></span>
+        <span class="stat-sub" id="stat-seat-sub">奇数列が窓枠回避（富士山ビュー: D席）</span>
+      </div>
+    </div>
     <div class="stat-card" style="border-left: 4px solid var(--azusa-violet-light);" onclick="setFilter('all')">
       <div class="stat-icon" style="background: var(--azusa-violet-subtle); color: var(--azusa-violet-light);">
         🚆
@@ -1434,16 +1444,6 @@
         <span class="stat-label">最速所要時間</span>
         <span class="stat-value" id="stat-fastest">2時間38分</span>
         <span class="stat-sub" id="stat-fastest-sub">あずさ1号（新宿07:00 ➔ 松本09:38）</span>
-      </div>
-    </div>
-    <div class="stat-card" style="border-left: 4px solid var(--azusa-gold);" onclick="openSeatModal()" title="窓枠回避と車窓Tipsを見る（クリックで詳細）">
-      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: var(--azusa-gold);">
-        💺
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">窓枠回避 おすすめ席</span>
-        <span class="stat-value" id="stat-seat-val" style="color: var(--azusa-gold);">奇数番席</span>
-        <span class="stat-sub" id="stat-seat-sub">下りは奇数列が窓枠回避（D席: 富士山）</span>
       </div>
     </div>
     <div class="stat-card" style="border-left: 4px solid var(--azusa-blue-light);" onclick="setFilter('tokyo')">
@@ -2371,15 +2371,15 @@ function updateStatsHeader() {
     statFastest.textContent = '2時間38分';
     statFastestSub.textContent = 'あずさ1号（新宿07:00 ➔ 松本09:38）';
     if (statSeatVal) {
-      statSeatVal.textContent = '奇数番席 (下り)';
-      statSeatSub.textContent = '下りは奇数列が窓枠回避（D席: 富士山）';
+      statSeatVal.innerHTML = '<strong style="color:var(--azusa-gold);">奇数席</strong>(下り) <span style="opacity:0.65;font-size:0.82em;font-weight:600;">/ 偶数(上)</span>';
+      statSeatSub.textContent = '奇数列が窓枠回避（富士山ビュー: D席）';
     }
   } else {
     statFastest.textContent = '2時間36分';
     statFastestSub.textContent = 'あずさ2号（松本06:04 ➔ 新宿08:40）';
     if (statSeatVal) {
-      statSeatVal.textContent = '偶数番席 (上り)';
-      statSeatSub.textContent = '上りは偶数列が窓枠回避（D席: 富士山）';
+      statSeatVal.innerHTML = '<strong style="color:var(--azusa-gold);">偶数席</strong>(上り) <span style="opacity:0.65;font-size:0.82em;font-weight:600;">/ 奇数(下)</span>';
+      statSeatSub.textContent = '偶数列が窓枠回避（富士山ビュー: D席）';
     }
   }
 }
