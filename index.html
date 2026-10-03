@@ -191,7 +191,7 @@
       gap: 12px;
     }
 
-    .theme-toggle-btn {
+    .theme-toggle-btn, .icon-link-btn {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
@@ -204,9 +204,10 @@
       cursor: pointer;
       transition: all 0.2s ease;
       font-size: 1.15rem;
+      text-decoration: none;
     }
 
-    .theme-toggle-btn:hover {
+    .theme-toggle-btn:hover, .icon-link-btn:hover {
       color: var(--text-main);
       border-color: var(--border-strong);
       transform: translateY(-2px);
@@ -215,7 +216,7 @@
     /* Summary Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
       gap: 14px;
       margin-bottom: 24px;
     }
@@ -1224,6 +1225,11 @@
       </div>
     </div>
     <div class="header-actions">
+      <a href="https://github.com/yakkun/azusa" target="_blank" rel="noopener noreferrer" class="icon-link-btn" title="GitHub リポジトリ" aria-label="GitHub Repository">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+      </a>
       <button class="theme-toggle-btn" id="theme-toggle" title="ライト/ダークモード切替" onclick="toggleTheme()">
         <span id="theme-icon">☀️</span>
       </button>
@@ -1250,6 +1256,16 @@
         <span class="stat-label">最速所要時間</span>
         <span class="stat-value" id="stat-fastest">2時間38分</span>
         <span class="stat-sub" id="stat-fastest-sub">あずさ1号（新宿07:00 ➔ 松本09:38）</span>
+      </div>
+    </div>
+    <div class="stat-card" style="border-left: 4px solid var(--azusa-gold);" onclick="openSeatModal()" title="窓枠回避と車窓Tipsを見る（クリックで詳細）">
+      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: var(--azusa-gold);">
+        💺
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">窓枠回避 おすすめ席</span>
+        <span class="stat-value" id="stat-seat-val" style="color: var(--azusa-gold);">奇数番席</span>
+        <span class="stat-sub" id="stat-seat-sub">下りは奇数列が窓枠回避（D席: 富士山）</span>
       </div>
     </div>
     <div class="stat-card" style="border-left: 4px solid var(--azusa-blue-light);" onclick="setFilter('tokyo')">
@@ -1366,6 +1382,65 @@
       </div>
       <div class="e353-feature-box">
         🚄 <strong>E353系 車内設備・ご利用案内:</strong> 全席指定席（座席未指定券でも空席ランプ確認で乗車可能）。全席にPC用電源コンセント、JR-EAST FREE Wi-Fi、荷物置場、空気バネ式車体傾斜装置を装備しています。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Seat Tips Modal -->
+<div class="modal-backdrop" id="seat-modal" onclick="closeSeatModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <span class="modal-badge" style="background: var(--azusa-gold); color: #000;">おすすめ座席</span>
+        <h2 class="modal-title">E353系 窓枠回避＆車窓Tips</h2>
+      </div>
+      <button class="modal-close-btn" onclick="closeSeatModal()" title="閉じる">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px;">
+        <h3 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--azusa-gold); display: flex; align-items: center; gap: 6px;">
+          <span>🪟</span> なぜ奇数席・偶数席で景色が変わるのか？
+        </h3>
+        <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+          E353系普通車は<strong>2列（奇数席＋偶数席）で1つの大型窓</strong>を共有する設計となっています。
+          座席の前後位置によって、窓の中央に位置する席と、窓と窓の間の柱（ピラー）が真横に来る席に分かれます。
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div style="background: rgba(123, 31, 162, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 14px;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--azusa-violet-light); margin-bottom: 4px;">▼ 下り（松本・白馬方面）</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">奇数番席</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">例: 1番, 3番, 5番, 7番…</div>
+        </div>
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 14px;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--azusa-blue-light); margin-bottom: 4px;">▲ 上り（新宿・東京方面）</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">偶数番席</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">例: 2番, 4番, 6番, 8番…</div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px;">
+        <h3 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 12px; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+          <span>🏔️</span> 車窓の景色（A席 vs D席）
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.82rem;">
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <span style="font-weight: 800; background: var(--badge-bg); padding: 3px 8px; border-radius: 4px; color: var(--azusa-gold); border: 1px solid var(--border-subtle);">D席</span>
+            <div style="color: var(--text-muted); line-height: 1.6;">
+              <strong style="color: var(--text-main);">富士山・甲府盆地・南アルプス・諏訪湖側</strong><br>
+              勝沼〜甲府で甲府盆地の夜景や富士山、韮崎付近で南アルプス、岡谷付近で諏訪湖を眺めたい方に人気です。
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <span style="font-weight: 800; background: var(--badge-bg); padding: 3px 8px; border-radius: 4px; color: #38bdf8; border: 1px solid var(--border-subtle);">A席</span>
+            <div style="color: var(--text-muted); line-height: 1.6;">
+              <strong style="color: var(--text-main);">八ヶ岳連峰・北アルプス側</strong><br>
+              小淵沢〜茅野で八ヶ岳の雄大な山容、松本〜白馬（大糸線区間）で北アルプス連峰を眺めたい方におすすめです。
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2111,12 +2186,23 @@ function renderChart() {
 function updateStatsHeader() {
   const statFastest = document.getElementById('stat-fastest');
   const statFastestSub = document.getElementById('stat-fastest-sub');
+  const statSeatVal = document.getElementById('stat-seat-val');
+  const statSeatSub = document.getElementById('stat-seat-sub');
+
   if (currentDirection === 'down') {
     statFastest.textContent = '2時間38分';
     statFastestSub.textContent = 'あずさ1号（新宿07:00 ➔ 松本09:38）';
+    if (statSeatVal) {
+      statSeatVal.textContent = '奇数番席 (下り)';
+      statSeatSub.textContent = '下りは奇数列が窓枠回避（D席: 富士山）';
+    }
   } else {
     statFastest.textContent = '2時間36分';
     statFastestSub.textContent = 'あずさ2号（松本06:04 ➔ 新宿08:40）';
+    if (statSeatVal) {
+      statSeatVal.textContent = '偶数番席 (上り)';
+      statSeatSub.textContent = '上りは偶数列が窓枠回避（D席: 富士山）';
+    }
   }
 }
 
@@ -2298,8 +2384,19 @@ function closeModal(e) {
   document.querySelectorAll('.train-row').forEach(r => r.classList.remove('selected'));
 }
 
+function openSeatModal() {
+  document.getElementById('seat-modal').classList.add('open');
+}
+
+function closeSeatModal(e) {
+  document.getElementById('seat-modal').classList.remove('open');
+}
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeModal();
+    closeSeatModal();
+  }
 });
 
 // Real-Time Now Line Indicator
@@ -2403,6 +2500,10 @@ function initFromParams() {
     if (target) {
       setTimeout(() => openModal(target), 100);
     }
+  }
+
+  if (params.get('tips') === 'seat') {
+    setTimeout(openSeatModal, 100);
   }
 }
 
