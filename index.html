@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>特急あずさ 時刻表ガントチャート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-purple: #7b1fa2;
+  --primary-purple-dark: #4a148c;
+  --primary-purple-light: #f3e8ff;
+  --primary-blue: #0284c7;
+  --primary-blue-dark: #0369a1;
+  --primary-blue-light: #e0f2fe;
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --grid-line: rgba(255, 255, 255, 0.07);
+  --grid-major: rgba(255, 255, 255, 0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 24px 16px;
+  line-height: 1.5;
+}
+.container { max-width: 1300px; margin: 0 auto; }
+header {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 24px; gap: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 16px;
+}
+.title-area h1 {
+  font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px;
+}
+.badge-tag {
+  font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px;
+  background: rgba(123, 31, 162, 0.2); color: #d8b4fe; border: 1px solid #a855f7; font-weight: 500;
+}
+.title-area p { color: var(--text-sub); font-size: 0.85rem; margin-top: 4px; }
+.controls { display: flex; align-items: center; gap: 12px; }
+.tab-btn {
+  background: var(--card-bg); color: var(--text-sub); border: 1px solid var(--card-border);
+  padding: 8px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+}
+.tab-btn.active.down-tab {
+  background: linear-gradient(135deg, #7b1fa2, #9333ea); color: #fff; border-color: #a855f7; box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+}
+.tab-btn.active.up-tab {
+  background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; border-color: #38bdf8; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+}
+.chart-card {
+  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
+  padding: 20px 16px; overflow-x: auto; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+.chart-wrapper { min-width: 960px; position: relative; }
+.time-axis { display: flex; margin-left: 90px; border-bottom: 1px solid var(--card-border); position: relative; height: 28px; }
+.axis-tick { position: absolute; transform: translateX(-50%); font-size: 0.72rem; color: var(--text-sub); font-weight: 600; }
+.grid-background { position: absolute; left: 90px; right: 0; top: 28px; bottom: 0; pointer-events: none; }
+.grid-col { position: absolute; top: 0; bottom: 0; border-left: 1px dashed var(--grid-line); }
+.grid-col.major { border-left: 1px solid var(--grid-major); }
+.chart-body { position: relative; z-index: 1; padding-top: 8px; }
+.train-row { display: flex; align-items: center; height: 30px; margin-bottom: 4px; }
+.train-label { width: 90px; flex-shrink: 0; font-size: 0.8rem; font-weight: 600; color: #cbd5e1; }
+.track-lane { position: relative; flex-grow: 1; height: 100%; }
+.bar-segment {
+  position: absolute; top: 3px; height: 24px; border-radius: 4px; display: flex; align-items: center;
+  padding: 0 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: transform 0.15s ease, filter 0.15s ease;
+  white-space: nowrap; text-overflow: ellipsis; overflow: hidden;
+}
+.bar-segment:hover { transform: scaleY(1.08); filter: brightness(1.15); z-index: 10 !important; }
+.down-main { background: linear-gradient(90deg, #7b1fa2, #a855f7); color: #ffffff; border-left: 3px solid #d8b4fe; z-index: 3; }
+.down-ext { background: rgba(168, 85, 247, 0.25); border: 1px dashed #a855f7; color: #e9d5ff; z-index: 2; }
+.up-main { background: linear-gradient(90deg, #0284c7, #38bdf8); color: #ffffff; border-right: 3px solid #bae6fd; z-index: 3; }
+.up-ext { background: rgba(56, 189, 248, 0.25); border: 1px dashed #38bdf8; color: #bae6fd; z-index: 2; }
+.legend-card {
+  margin-top: 18px; display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.8rem; color: var(--text-sub);
+  padding: 12px 16px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-box { width: 16px; height: 12px; border-radius: 2px; }
+#tooltip {
+  position: fixed; display: none; background: #0f172a; border: 1px solid #475569; border-radius: 8px;
+  padding: 10px 14px; color: #fff; font-size: 0.8rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  pointer-events: none; z-index: 1000; max-width: 280px;
+}
+#tooltip .tt-title { font-weight: 700; margin-bottom: 4px; color: #38bdf8; }
+#tooltip.down-tt .tt-title { color: #d8b4fe; }
+#tooltip .tt-row { display: flex; justify-content: space-between; gap: 16px; color: #cbd5e1; font-size: 0.75rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="title-area">
+      <h1>特急あずさ 時刻表ガントチャート <span class="badge-tag">定期全16往復</span></h1>
+      <p>JR中央線・大糸線 E353系運行タイムライン（東京・千葉発着・白馬直通対応）</p>
+    </div>
+    <div class="controls">
+      <button class="tab-btn active down-tab" id="btn-down" onclick="setDirection('down')">下り（松本・白馬方面）</button>
+      <button class="tab-btn up-tab" id="btn-up" onclick="setDirection('up')">上り（新宿・東京方面）</button>
+    </div>
+  </header>
+  <main class="chart-card">
+    <div class="chart-wrapper">
+      <div class="time-axis" id="time-axis"></div>
+      <div class="grid-background" id="grid-bg"></div>
+      <div class="chart-body" id="chart-body"></div>
+    </div>
+    <div class="legend-card" id="legend"></div>
+  </main>
+</div>
+<div id="tooltip"></div>
+<script>
+const START_HOUR = 6, END_HOUR = 24, TOTAL_MIN = (END_HOUR - START_HOUR) * 60;
+function timeToPct(h, m) { return (((h - START_HOUR) * 60 + m) / TOTAL_MIN) * 100; }
+const downData = [
+  { name: "あずさ1号", sh: 7, sm: 0, eh: 9, em: 38, extB: null, extA: null, note: "最速達タイプ（2時間38分）" },
+  { name: "あずさ3号", sh: 7, sm: 30, eh: 10, em: 23, extB: { sh: 6, sm: 38, eh: 7, em: 30, label: "千葉始発 (06:38発)" }, extA: null, note: "千葉発松本行" },
+  { name: "あずさ5号", sh: 8, sm: 0, eh: 10, em: 37, extB: null, extA: { sh: 10, sm: 41, eh: 11, em: 40, label: "白馬行 (11:40着)" }, note: "大糸線白馬直通" },
+  { name: "あずさ9号", sh: 9, sm: 0, eh: 11, em: 39, extB: null, extA: null },
+  { name: "あずさ13号", sh: 10, sm: 0, eh: 12, em: 37, extB: null, extA: null },
+  { name: "あずさ17号", sh: 11, sm: 0, eh: 13, em: 38, extB: null, extA: null },
+  { name: "あずさ21号", sh: 12, sm: 0, eh: 14, em: 38, extB: null, extA: null },
+  { name: "あずさ25号", sh: 13, sm: 0, eh: 15, em: 38, extB: null, extA: null },
+  { name: "あずさ29号", sh: 14, sm: 0, eh: 16, em: 39, extB: null, extA: null },
+  { name: "あずさ33号", sh: 15, sm: 0, eh: 17, em: 38, extB: null, extA: null },
+  { name: "あずさ37号", sh: 16, sm: 0, eh: 18, em: 41, extB: null, extA: null },
+  { name: "あずさ41号", sh: 17, sm: 0, eh: 19, em: 44, extB: { sh: 16, sm: 45, eh: 17, em: 0, label: "東京始発 (16:45発)" }, extA: null, note: "東京発松本行" },
+  { name: "あずさ45号", sh: 18, sm: 0, eh: 20, em: 41, extB: { sh: 17, sm: 45, eh: 18, em: 0, label: "東京始発 (17:45発)" }, extA: null, note: "東京発松本行" },
+  { name: "あずさ49号", sh: 19, sm: 0, eh: 21, em: 40, extB: { sh: 18, sm: 45, eh: 19, em: 0, label: "東京始発 (18:45発)" }, extA: null, note: "東京発松本行" },
+  { name: "あずさ53号", sh: 20, sm: 0, eh: 22, em: 38, extB: { sh: 19, sm: 45, eh: 20, em: 0, label: "東京始発 (19:45発)" }, extA: null, note: "東京発松本行" },
+  { name: "あずさ55号", sh: 21, sm: 0, eh: 23, em: 41, extB: { sh: 20, sm: 45, eh: 21, em: 0, label: "東京始発 (20:45発)" }, extA: null, note: "下り最終列車（東京発）" }
+];
+const upData = [
+  { name: "あずさ2号", sh: 6, sm: 4, eh: 8, em: 40, extB: null, extA: null, note: "上り一番列車" },
+  { name: "あずさ4号", sh: 6, sm: 30, eh: 9, em: 11, extB: null, extA: { sh: 9, sm: 11, eh: 9, em: 27, label: "東京行 (09:27着)" }, note: "東京直通" },
+  { name: "あずさ8号", sh: 7, sm: 10, eh: 9, em: 46, extB: null, extA: { sh: 9, sm: 46, eh: 10, em: 4, label: "東京行 (10:04着)" }, note: "東京直通" },
+  { name: "あずさ12号", sh: 8, sm: 10, eh: 10, em: 54, extB: null, extA: { sh: 10, sm: 54, eh: 11, em: 10, label: "東京行 (11:10着)" }, note: "東京直通" },
+  { name: "あずさ16号", sh: 9, sm: 10, eh: 11, em: 51, extB: null, extA: { sh: 11, sm: 51, eh: 12, em: 8, label: "東京行 (12:08着)" }, note: "東京直通" },
+  { name: "あずさ22号", sh: 10, sm: 10, eh: 12, em: 44, extB: null, extA: null },
+  { name: "あずさ26号", sh: 11, sm: 10, eh: 13, em: 45, extB: null, extA: null },
+  { name: "あずさ30号", sh: 12, sm: 10, eh: 14, em: 45, extB: null, extA: null },
+  { name: "あずさ34号", sh: 13, sm: 10, eh: 15, em: 45, extB: null, extA: null },
+  { name: "あずさ38号", sh: 14, sm: 50, eh: 17, em: 25, extB: { sh: 13, sm: 43, eh: 14, em: 50, label: "白馬始発 (13:43発)" }, extA: null, note: "大糸線白馬直通" },
+  { name: "あずさ42号", sh: 15, sm: 10, eh: 18, em: 4, extB: null, extA: null },
+  { name: "あずさ46号", sh: 16, sm: 10, eh: 18, em: 45, extB: null, extA: null },
+  { name: "あずさ50号", sh: 17, sm: 18, eh: 19, em: 50, extB: null, extA: { sh: 19, sm: 50, eh: 20, em: 34, label: "千葉行 (20:34着)" }, note: "千葉直通" },
+  { name: "あずさ54号", sh: 18, sm: 40, eh: 21, em: 18, extB: null, extA: null },
+  { name: "あずさ58号", sh: 19, sm: 30, eh: 22, em: 4, extB: null, extA: null },
+  { name: "あずさ60号", sh: 20, sm: 10, eh: 22, em: 45, extB: null, extA: null, note: "上り最終列車" }
+];
+let currentDirection = 'down';
+function renderAxisAndGrid() {
+  const axis = document.getElementById('time-axis'), grid = document.getElementById('grid-bg');
+  axis.innerHTML = ''; grid.innerHTML = '';
+  for (let h = START_HOUR; h <= END_HOUR; h++) {
+    const pct = timeToPct(h, 0);
+    const tick = document.createElement('div');
+    tick.className = 'axis-tick'; tick.style.left = `${pct}%`; tick.textContent = `${String(h).padStart(2, '0')}:00`;
+    axis.appendChild(tick);
+    const col = document.createElement('div');
+    col.className = `grid-col ${h % 2 === 0 ? 'major' : ''}`; col.style.left = `${pct}%`;
+    grid.appendChild(col);
+  }
+}
+function renderChart() {
+  const isDown = currentDirection === 'down', data = isDown ? downData : upData;
+  const container = document.getElementById('chart-body'); container.innerHTML = '';
+  data.forEach(item => {
+    const row = document.createElement('div'); row.className = 'train-row';
+    const label = document.createElement('div'); label.className = 'train-label'; label.textContent = item.name; row.appendChild(label);
+    const lane = document.createElement('div'); lane.className = 'track-lane';
+    if (item.extB) {
+      const bLeft = timeToPct(item.extB.sh, item.extB.sm), bWidth = timeToPct(item.extB.eh, item.extB.em) - bLeft;
+      const bSeg = document.createElement('div');
+      bSeg.className = `bar-segment ${isDown ? 'down-ext' : 'up-ext'}`; bSeg.style.left = `${bLeft}%`; bSeg.style.width = `${bWidth}%`;
+      bSeg.innerHTML = item.extB.label; attachTooltip(bSeg, item, item.extB.label); lane.appendChild(bSeg);
+    }
+    const mLeft = timeToPct(item.sh, item.sm), mWidth = timeToPct(item.eh, item.em) - mLeft;
+    const mSeg = document.createElement('div');
+    mSeg.className = `bar-segment ${isDown ? 'down-main' : 'up-main'}`; mSeg.style.left = `${mLeft}%`; mSeg.style.width = `${mWidth}%`;
+    const durMin = (item.eh * 60 + item.em) - (item.sh * 60 + item.sm), durH = Math.floor(durMin / 60), durM = durMin % 60;
+    const fromStation = isDown ? '新宿' : '松本', toStation = isDown ? '松本' : '新宿';
+    mSeg.innerHTML = `${String(item.sh).padStart(2,'0')}:${String(item.sm).padStart(2,'0')} ${fromStation} ➔ ${String(item.eh).padStart(2,'0')}:${String(item.em).padStart(2,'0')} ${toStation} (${durH}h${durM}m)`;
+    attachTooltip(mSeg, item, `${fromStation}〜${toStation}（所要 ${durH}時間${durM}分）`); lane.appendChild(mSeg);
+    if (item.extA) {
+      const aLeft = timeToPct(item.extA.sh, item.extA.sm), aWidth = timeToPct(item.extA.eh, item.extA.em) - aLeft;
+      const aSeg = document.createElement('div');
+      aSeg.className = `bar-segment ${isDown ? 'down-ext' : 'up-ext'}`; aSeg.style.left = `${aLeft}%`; aSeg.style.width = `${aWidth}%`;
+      aSeg.innerHTML = item.extA.label; attachTooltip(aSeg, item, item.extA.label); lane.appendChild(aSeg);
+    }
+    row.appendChild(lane); container.appendChild(row);
+  });
+  renderLegend();
+}
+function renderLegend() {
+  const isDown = currentDirection === 'down', legend = document.getElementById('legend');
+  if (isDown) {
+    legend.innerHTML = `
+      <div class="legend-item"><div class="legend-box" style="background:#7b1fa2;"></div><span>基本区間（新宿〜松本：毎時00分発基準）</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:rgba(168,85,247,0.3); border:1px dashed #a855f7;"></div><span>直通延長区間（東京発・千葉発・白馬行）</span></div>
+      <div class="legend-item" style="margin-left:auto; color:#94a3b8;">※平日・土休日ともに基本同パターンダイヤで運行</div>
+    `;
+  } else {
+    legend.innerHTML = `
+      <div class="legend-item"><div class="legend-box" style="background:#0284c7;"></div><span>基本区間（松本〜新宿：毎時10分発基準）</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:rgba(56,189,248,0.3); border:1px dashed #38bdf8;"></div><span>直通延長区間（東京行・千葉行・白馬発）</span></div>
+      <div class="legend-item" style="margin-left:auto; color:#94a3b8;">※東京駅着は午前帯4本、千葉着は夕夜帯1本</div>
+    `;
+  }
+}
+function setDirection(dir) {
+  currentDirection = dir;
+  document.getElementById('btn-down').classList.toggle('active', dir === 'down');
+  document.getElementById('btn-up').classList.toggle('active', dir === 'up');
+  renderChart();
+}
+const tooltip = document.getElementById('tooltip');
+function attachTooltip(el, item, sectionInfo) {
+  el.addEventListener('mousemove', (e) => {
+    tooltip.style.display = 'block';
+    tooltip.className = currentDirection === 'down' ? 'down-tt' : '';
+    tooltip.style.left = `${e.clientX + 14}px`;
+    tooltip.style.top = `${e.clientY + 14}px`;
+    tooltip.innerHTML = `
+      <div class="tt-title">${item.name}</div>
+      <div class="tt-row"><span>区間:</span><span>${sectionInfo}</span></div>
+      ${item.note ? `<div class="tt-row" style="color:#fcd34d; margin-top:3px;"><span>備考:</span><span>${item.note}</span></div>` : ''}
+    `;
+  });
+  el.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+}
+renderAxisAndGrid();
+renderChart();
+</script>
+</body>
+</html>
