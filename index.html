@@ -1013,12 +1013,55 @@
       border: 1px solid var(--border-subtle);
     }
 
+    .timeline-header-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .timeline-header-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timeline-count-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 1px 8px;
+      border-radius: 9999px;
+      background: var(--badge-bg);
+      color: var(--text-muted);
+    }
+
+    .timeline-scroll-container {
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-strong) transparent;
+    }
+
+    .timeline-scroll-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .timeline-scroll-container::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 3px;
+    }
+
     .timeline-step {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 14px;
       position: relative;
-      padding-bottom: 20px;
+      padding-bottom: 16px;
     }
 
     .timeline-step:last-child {
@@ -1030,7 +1073,7 @@
       position: absolute;
       left: 11px;
       top: 24px;
-      bottom: 0;
+      bottom: -2px;
       width: 2px;
       background: var(--border-strong);
     }
@@ -1044,19 +1087,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       z-index: 2;
       flex-shrink: 0;
     }
 
     .timeline-bullet.start {
-      border-color: var(--azusa-violet-light);
-      color: var(--azusa-violet-light);
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .timeline-bullet.stop {
+      border-color: var(--border-strong);
+      color: var(--text-subtle);
+      font-size: 0.55rem;
     }
     .timeline-bullet.end {
-      border-color: #22c55e;
-      color: #22c55e;
+      border-color: #ef4444;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
     }
 
     .timeline-detail {
@@ -1066,15 +1116,43 @@
       justify-content: space-between;
     }
 
+    .timeline-station-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .timeline-station {
       font-weight: 700;
-      font-size: 0.96rem;
+      font-size: 0.94rem;
+      color: var(--text-main);
+    }
+
+    .station-major-pill {
+      font-size: 0.64rem;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--badge-bg);
+      color: var(--text-muted);
+    }
+
+    .timeline-time-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
     }
 
     .timeline-time {
       font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
-      font-size: 0.96rem;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .timeline-time-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
     }
 
     .meta-row {
@@ -1298,41 +1376,534 @@ const START_HOUR = 6, END_HOUR = 24, TOTAL_MIN = (END_HOUR - START_HOUR) * 60;
 function timeToPct(h, m) { return (((h - START_HOUR) * 60 + m) / TOTAL_MIN) * 100; }
 
 const downData = [
-  { id: "d1", name: "あずさ1号", sh: 7, sm: 0, eh: 9, em: 38, extB: null, extA: null, note: "最速達タイプ（所要2時間38分 / 新宿・八王子・甲府・茅野・上諏訪・松本のみ停車）", cars: "9両編成", tags: ["fastest"] },
-  { id: "d3", name: "あずさ3号", sh: 7, sm: 30, eh: 10, em: 23, extB: { station: "千葉", sh: 6, sm: 38, eh: 7, em: 30, label: "千葉発" }, extA: null, note: "千葉発松本行（総武本線・中央本線経由）", cars: "9両編成", tags: ["chiba"] },
-  { id: "d5", name: "あずさ5号", sh: 8, sm: 0, eh: 10, em: 37, extB: null, extA: { station: "白馬", sh: 10, sm: 41, eh: 11, em: 40, label: "白馬行" }, note: "大糸線白馬直通（穂高・信濃大町・白馬方面）", cars: "9両編成", tags: ["hakuba"] },
-  { id: "d9", name: "あずさ9号", sh: 9, sm: 0, eh: 11, em: 39, extB: null, extA: null, cars: "12両編成", tags: [] },
-  { id: "d13", name: "あずさ13号", sh: 10, sm: 0, eh: 12, em: 37, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "d17", name: "あずさ17号", sh: 11, sm: 0, eh: 13, em: 38, extB: null, extA: null, cars: "12両編成", tags: [] },
-  { id: "d21", name: "あずさ21号", sh: 12, sm: 0, eh: 14, em: 38, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "d25", name: "あずさ25号", sh: 13, sm: 0, eh: 15, em: 38, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "d29", name: "あずさ29号", sh: 14, sm: 0, eh: 16, em: 39, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "d33", name: "あずさ33号", sh: 15, sm: 0, eh: 17, em: 38, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "d37", name: "あずさ37号", sh: 16, sm: 0, eh: 18, em: 41, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "d41", name: "あずさ41号", sh: 17, sm: 0, eh: 19, em: 44, extB: { station: "東京", sh: 16, sm: 45, eh: 17, em: 0, label: "東京発" }, extA: null, note: "東京発松本行（夕方通勤・観光直通）", cars: "12両編成", tags: ["tokyo"] },
-  { id: "d45", name: "あずさ45号", sh: 18, sm: 0, eh: 20, em: 41, extB: { station: "東京", sh: 17, sm: 45, eh: 18, em: 0, label: "東京発" }, extA: null, note: "東京発松本行", cars: "12両編成", tags: ["tokyo"] },
-  { id: "d49", name: "あずさ49号", sh: 19, sm: 0, eh: 21, em: 40, extB: { station: "東京", sh: 18, sm: 45, eh: 19, em: 0, label: "東京発" }, extA: null, note: "東京発松本行", cars: "12両編成", tags: ["tokyo"] },
-  { id: "d53", name: "あずさ53号", sh: 20, sm: 0, eh: 22, em: 38, extB: { station: "東京", sh: 19, sm: 45, eh: 20, em: 0, label: "東京発" }, extA: null, note: "東京発松本行", cars: "12両編成", tags: ["tokyo"] },
-  { id: "d55", name: "あずさ55号", sh: 21, sm: 0, eh: 23, em: 41, extB: { station: "東京", sh: 20, sm: 45, eh: 21, em: 0, label: "東京発" }, extA: null, note: "下り最終定期列車（東京発松本行）", cars: "12両編成", tags: ["tokyo"] }
+  { 
+    id: "d1", name: "あずさ1号", sh: 7, sm: 0, eh: 9, em: 38, extB: null, extA: null, 
+    note: "最速達タイプ（所要2時間38分 / 新宿・八王子・甲府・茅野・上諏訪・松本のみ停車）", cars: "9両編成", tags: ["fastest"],
+    stops: [
+      { station: "新宿", time: "07:00", type: "start", isMajor: true },
+      { station: "立川", time: "07:21", type: "stop" },
+      { station: "八王子", time: "07:30", type: "stop", isMajor: true },
+      { station: "甲府", time: "08:28", type: "stop", isMajor: true },
+      { station: "茅野", time: "09:08", type: "stop" },
+      { station: "上諏訪", time: "09:14", type: "stop" },
+      { station: "松本", time: "09:38", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d3", name: "あずさ3号", sh: 7, sm: 30, eh: 10, em: 23, extB: { station: "千葉", sh: 6, sm: 38, eh: 7, em: 30, label: "千葉発" }, extA: null, 
+    note: "千葉発松本行（総武本線・中央本線経由）", cars: "9両編成", tags: ["chiba"],
+    stops: [
+      { station: "千葉", time: "06:38", type: "start", isMajor: true },
+      { station: "船橋", time: "06:51", type: "stop" },
+      { station: "錦糸町", time: "07:07", type: "stop" },
+      { station: "新宿", time: "07:30", type: "stop", isMajor: true },
+      { station: "立川", time: "07:53", type: "stop" },
+      { station: "八王子", time: "08:03", type: "stop", isMajor: true },
+      { station: "大月", time: "08:34", type: "stop" },
+      { station: "甲府", time: "09:13", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "09:47", type: "stop" },
+      { station: "茅野", time: "09:59", type: "stop" },
+      { station: "上諏訪", time: "10:05", type: "stop" },
+      { station: "岡谷", time: "10:14", type: "stop" },
+      { station: "塩尻", time: "10:23", type: "stop", isMajor: true },
+      { station: "松本", time: "10:33", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d5", name: "あずさ5号", sh: 8, sm: 0, eh: 10, em: 37, extB: null, extA: { station: "白馬", sh: 10, sm: 41, eh: 11, em: 40, label: "白馬行" }, 
+    note: "大糸線白馬直通（穂高・信濃大町・白馬方面）", cars: "9両編成", tags: ["hakuba"],
+    stops: [
+      { station: "新宿", time: "08:00", type: "start", isMajor: true },
+      { station: "立川", time: "08:25", type: "stop" },
+      { station: "八王子", time: "08:34", type: "stop", isMajor: true },
+      { station: "甲府", time: "09:29", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "10:01", type: "stop" },
+      { station: "茅野", time: "10:13", type: "stop" },
+      { station: "上諏訪", time: "10:19", type: "stop" },
+      { station: "岡谷", time: "10:28", type: "stop" },
+      { station: "塩尻", time: "10:37", type: "stop", isMajor: true },
+      { station: "松本", time: "10:41", type: "stop", isMajor: true },
+      { station: "豊科", time: "10:55", type: "stop" },
+      { station: "穂高", time: "11:01", type: "stop" },
+      { station: "信濃大町", time: "11:15", type: "stop" },
+      { station: "白馬", time: "11:40", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d9", name: "あずさ9号", sh: 9, sm: 0, eh: 11, em: 39, extB: null, extA: null, cars: "12両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "09:00", type: "start", isMajor: true },
+      { station: "立川", time: "09:23", type: "stop" },
+      { station: "八王子", time: "09:33", type: "stop", isMajor: true },
+      { station: "甲府", time: "10:29", type: "stop", isMajor: true },
+      { station: "茅野", time: "11:10", type: "stop" },
+      { station: "上諏訪", time: "11:16", type: "stop" },
+      { station: "岡谷", time: "11:25", type: "stop" },
+      { station: "塩尻", time: "11:34", type: "stop", isMajor: true },
+      { station: "松本", time: "11:39", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d13", name: "あずさ13号", sh: 10, sm: 0, eh: 12, em: 37, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "10:00", type: "start", isMajor: true },
+      { station: "立川", time: "10:23", type: "stop" },
+      { station: "八王子", time: "10:32", type: "stop", isMajor: true },
+      { station: "大月", time: "11:04", type: "stop" },
+      { station: "甲府", time: "11:33", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "12:05", type: "stop" },
+      { station: "茅野", time: "12:17", type: "stop" },
+      { station: "上諏訪", time: "12:23", type: "stop" },
+      { station: "岡谷", time: "12:32", type: "stop" },
+      { station: "塩尻", time: "12:41", type: "stop", isMajor: true },
+      { station: "松本", time: "12:47", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d17", name: "あずさ17号", sh: 11, sm: 0, eh: 13, em: 38, extB: null, extA: null, cars: "12両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "11:00", type: "start", isMajor: true },
+      { station: "立川", time: "11:23", type: "stop" },
+      { station: "八王子", time: "11:32", type: "stop", isMajor: true },
+      { station: "甲府", time: "12:30", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "13:03", type: "stop" },
+      { station: "茅野", time: "13:16", type: "stop" },
+      { station: "上諏訪", time: "13:22", type: "stop" },
+      { station: "岡谷", time: "13:31", type: "stop" },
+      { station: "塩尻", time: "13:40", type: "stop", isMajor: true },
+      { station: "松本", time: "13:46", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d21", name: "あずさ21号", sh: 12, sm: 0, eh: 14, em: 38, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "12:00", type: "start", isMajor: true },
+      { station: "立川", time: "12:23", type: "stop" },
+      { station: "八王子", time: "12:32", type: "stop", isMajor: true },
+      { station: "甲府", time: "13:30", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "14:03", type: "stop" },
+      { station: "茅野", time: "14:16", type: "stop" },
+      { station: "上諏訪", time: "14:22", type: "stop" },
+      { station: "岡谷", time: "14:31", type: "stop" },
+      { station: "塩尻", time: "14:40", type: "stop", isMajor: true },
+      { station: "松本", time: "14:46", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d25", name: "あずさ25号", sh: 13, sm: 0, eh: 15, em: 38, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "13:00", type: "start", isMajor: true },
+      { station: "立川", time: "13:23", type: "stop" },
+      { station: "八王子", time: "13:32", type: "stop", isMajor: true },
+      { station: "大月", time: "14:04", type: "stop" },
+      { station: "甲府", time: "14:33", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "15:05", type: "stop" },
+      { station: "茅野", time: "15:17", type: "stop" },
+      { station: "上諏訪", time: "15:23", type: "stop" },
+      { station: "岡谷", time: "15:32", type: "stop" },
+      { station: "塩尻", time: "15:41", type: "stop", isMajor: true },
+      { station: "松本", time: "15:47", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d29", name: "あずさ29号", sh: 14, sm: 0, eh: 16, em: 39, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "14:00", type: "start", isMajor: true },
+      { station: "立川", time: "14:23", type: "stop" },
+      { station: "八王子", time: "14:32", type: "stop", isMajor: true },
+      { station: "甲府", time: "15:30", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "16:03", type: "stop" },
+      { station: "茅野", time: "16:16", type: "stop" },
+      { station: "上諏訪", time: "16:22", type: "stop" },
+      { station: "岡谷", time: "16:31", type: "stop" },
+      { station: "塩尻", time: "16:40", type: "stop", isMajor: true },
+      { station: "松本", time: "16:46", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d33", name: "あずさ33号", sh: 15, sm: 0, eh: 17, em: 38, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "15:00", type: "start", isMajor: true },
+      { station: "立川", time: "15:23", type: "stop" },
+      { station: "八王子", time: "15:32", type: "stop", isMajor: true },
+      { station: "甲府", time: "16:30", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "17:03", type: "stop" },
+      { station: "茅野", time: "17:16", type: "stop" },
+      { station: "上諏訪", time: "17:22", type: "stop" },
+      { station: "岡谷", time: "17:31", type: "stop" },
+      { station: "塩尻", time: "17:40", type: "stop", isMajor: true },
+      { station: "松本", time: "17:46", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d37", name: "あずさ37号", sh: 16, sm: 0, eh: 18, em: 41, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "新宿", time: "16:00", type: "start", isMajor: true },
+      { station: "立川", time: "16:23", type: "stop" },
+      { station: "八王子", time: "16:32", type: "stop", isMajor: true },
+      { station: "甲府", time: "17:30", type: "stop", isMajor: true },
+      { station: "茅野", time: "18:11", type: "stop" },
+      { station: "上諏訪", time: "18:17", type: "stop" },
+      { station: "岡谷", time: "18:26", type: "stop" },
+      { station: "塩尻", time: "18:35", type: "stop", isMajor: true },
+      { station: "松本", time: "18:41", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d41", name: "あずさ41号", sh: 17, sm: 0, eh: 19, em: 44, extB: { station: "東京", sh: 16, sm: 45, eh: 17, em: 0, label: "東京発" }, extA: null, 
+    note: "東京発松本行（夕方通勤・観光直通）", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "東京", time: "16:45", type: "start", isMajor: true },
+      { station: "新宿", time: "17:00", type: "stop", isMajor: true },
+      { station: "立川", time: "17:23", type: "stop" },
+      { station: "八王子", time: "17:33", type: "stop", isMajor: true },
+      { station: "甲府", time: "18:32", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "19:07", type: "stop" },
+      { station: "茅野", time: "19:20", type: "stop" },
+      { station: "上諏訪", time: "19:26", type: "stop" },
+      { station: "岡谷", time: "19:35", type: "stop" },
+      { station: "塩尻", time: "19:44", type: "stop", isMajor: true },
+      { station: "松本", time: "19:50", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d45", name: "あずさ45号", sh: 18, sm: 0, eh: 20, em: 41, extB: { station: "東京", sh: 17, sm: 45, eh: 18, em: 0, label: "東京発" }, extA: null, 
+    note: "東京発松本行", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "東京", time: "17:45", type: "start", isMajor: true },
+      { station: "新宿", time: "18:00", type: "stop", isMajor: true },
+      { station: "立川", time: "18:23", type: "stop" },
+      { station: "八王子", time: "18:33", type: "stop", isMajor: true },
+      { station: "大月", time: "19:05", type: "stop" },
+      { station: "甲府", time: "19:35", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "20:07", type: "stop" },
+      { station: "茅野", time: "20:20", type: "stop" },
+      { station: "上諏訪", time: "20:26", type: "stop" },
+      { station: "岡谷", time: "20:35", type: "stop" },
+      { station: "塩尻", time: "20:44", type: "stop", isMajor: true },
+      { station: "松本", time: "20:50", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d49", name: "あずさ49号", sh: 19, sm: 0, eh: 21, em: 40, extB: { station: "東京", sh: 18, sm: 45, eh: 19, em: 0, label: "東京発" }, extA: null, 
+    note: "東京発松本行", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "東京", time: "18:45", type: "start", isMajor: true },
+      { station: "新宿", time: "19:00", type: "stop", isMajor: true },
+      { station: "立川", time: "19:24", type: "stop" },
+      { station: "八王子", time: "19:34", type: "stop", isMajor: true },
+      { station: "甲府", time: "20:34", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "21:07", type: "stop" },
+      { station: "茅野", time: "21:19", type: "stop" },
+      { station: "上諏訪", time: "21:25", type: "stop" },
+      { station: "岡谷", time: "21:34", type: "stop" },
+      { station: "塩尻", time: "21:43", type: "stop", isMajor: true },
+      { station: "松本", time: "21:49", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d53", name: "あずさ53号", sh: 20, sm: 0, eh: 22, em: 38, extB: { station: "東京", sh: 19, sm: 45, eh: 20, em: 0, label: "東京発" }, extA: null, 
+    note: "東京発松本行", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "東京", time: "19:45", type: "start", isMajor: true },
+      { station: "新宿", time: "20:00", type: "stop", isMajor: true },
+      { station: "立川", time: "20:23", type: "stop" },
+      { station: "八王子", time: "20:33", type: "stop", isMajor: true },
+      { station: "甲府", time: "21:32", type: "stop", isMajor: true },
+      { station: "韮崎", time: "21:44", type: "stop" },
+      { station: "小淵沢", time: "22:04", type: "stop" },
+      { station: "茅野", time: "22:16", type: "stop" },
+      { station: "上諏訪", time: "22:22", type: "stop" },
+      { station: "岡谷", time: "22:31", type: "stop" },
+      { station: "塩尻", time: "22:40", type: "stop", isMajor: true },
+      { station: "松本", time: "22:46", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "d55", name: "あずさ55号", sh: 21, sm: 0, eh: 23, em: 41, extB: { station: "東京", sh: 20, sm: 45, eh: 21, em: 0, label: "東京発" }, extA: null, 
+    note: "下り最終定期列車（東京発松本行）", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "東京", time: "20:45", type: "start", isMajor: true },
+      { station: "新宿", time: "21:00", type: "stop", isMajor: true },
+      { station: "立川", time: "21:24", type: "stop" },
+      { station: "八王子", time: "21:34", type: "stop", isMajor: true },
+      { station: "甲府", time: "22:34", type: "stop", isMajor: true },
+      { station: "小淵沢", time: "23:07", type: "stop" },
+      { station: "茅野", time: "23:19", type: "stop" },
+      { station: "上諏訪", time: "23:25", type: "stop" },
+      { station: "岡谷", time: "23:34", type: "stop" },
+      { station: "塩尻", time: "23:43", type: "stop", isMajor: true },
+      { station: "松本", time: "23:48", type: "end", isMajor: true }
+    ]
+  }
 ];
 
 const upData = [
-  { id: "u2", name: "あずさ2号", sh: 6, sm: 4, eh: 8, em: 40, extB: null, extA: null, note: "上り一番列車・最速達（所要2時間36分）", cars: "9両編成", tags: ["fastest"] },
-  { id: "u4", name: "あずさ4号", sh: 6, sm: 30, eh: 9, em: 11, extB: null, extA: { station: "東京", sh: 9, sm: 11, eh: 9, em: 27, label: "東京行" }, note: "東京直通（午前09:27着）", cars: "12両編成", tags: ["tokyo"] },
-  { id: "u8", name: "あずさ8号", sh: 7, sm: 10, eh: 9, em: 46, extB: null, extA: { station: "東京", sh: 9, sm: 46, eh: 10, em: 4, label: "東京行" }, note: "東京直通（午前10:04着）", cars: "12両編成", tags: ["tokyo"] },
-  { id: "u12", name: "あずさ12号", sh: 8, sm: 10, eh: 10, em: 54, extB: null, extA: { station: "東京", sh: 10, sm: 54, eh: 11, em: 10, label: "東京行" }, note: "東京直通（午前11:10着）", cars: "12両編成", tags: ["tokyo"] },
-  { id: "u16", name: "あずさ16号", sh: 9, sm: 10, eh: 11, em: 51, extB: null, extA: { station: "東京", sh: 11, sm: 51, eh: 12, em: 8, label: "東京行" }, note: "東京直通（昼前12:08着）", cars: "12両編成", tags: ["tokyo"] },
-  { id: "u22", name: "あずさ22号", sh: 10, sm: 10, eh: 12, em: 44, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u26", name: "あずさ26号", sh: 11, sm: 10, eh: 13, em: 45, extB: null, extA: null, cars: "12両編成", tags: [] },
-  { id: "u30", name: "あずさ30号", sh: 12, sm: 10, eh: 14, em: 45, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u34", name: "あずさ34号", sh: 13, sm: 10, eh: 15, em: 45, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u38", name: "あずさ38号", sh: 14, sm: 50, eh: 17, em: 25, extB: { station: "白馬", sh: 13, sm: 43, eh: 14, em: 50, label: "白馬発" }, extA: null, note: "大糸線白馬直通（白馬13:43発）", cars: "9両編成", tags: ["hakuba"] },
-  { id: "u42", name: "あずさ42号", sh: 15, sm: 10, eh: 18, em: 4, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u46", name: "あずさ46号", sh: 16, sm: 10, eh: 18, em: 45, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u50", name: "あずさ50号", sh: 17, sm: 18, eh: 19, em: 50, extB: null, extA: { station: "千葉", sh: 19, sm: 50, eh: 20, em: 34, label: "千葉行" }, note: "千葉直通（錦糸町・船橋・千葉方面）", cars: "9両編成", tags: ["chiba"] },
-  { id: "u54", name: "あずさ54号", sh: 18, sm: 40, eh: 21, em: 18, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u58", name: "あずさ58号", sh: 19, sm: 30, eh: 22, em: 4, extB: null, extA: null, cars: "9両編成", tags: [] },
-  { id: "u60", name: "あずさ60号", sh: 20, sm: 10, eh: 22, em: 45, extB: null, extA: null, note: "上り最終定期列車（新宿行）", cars: "9両編成", tags: [] }
+  { 
+    id: "u2", name: "あずさ2号", sh: 6, sm: 4, eh: 8, em: 40, extB: null, extA: null, 
+    note: "上り一番列車・最速達（所要2時間36分）", cars: "9両編成", tags: ["fastest"],
+    stops: [
+      { station: "松本", time: "06:04", type: "start", isMajor: true },
+      { station: "塩尻", time: "06:14", type: "stop", isMajor: true },
+      { station: "岡谷", time: "06:23", type: "stop" },
+      { station: "上諏訪", time: "06:32", type: "stop" },
+      { station: "茅野", time: "06:38", type: "stop" },
+      { station: "小淵沢", time: "06:56", type: "stop" },
+      { station: "甲府", time: "07:28", type: "stop", isMajor: true },
+      { station: "八王子", time: "08:18", type: "stop", isMajor: true },
+      { station: "立川", time: "08:28", type: "stop" },
+      { station: "新宿", time: "08:49", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u4", name: "あずさ4号", sh: 6, sm: 30, eh: 9, em: 11, extB: null, extA: { station: "東京", sh: 9, sm: 11, eh: 9, em: 27, label: "東京行" }, 
+    note: "東京直通（午前09:27着）", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "松本", time: "06:30", type: "start", isMajor: true },
+      { station: "塩尻", time: "06:40", type: "stop", isMajor: true },
+      { station: "岡谷", time: "06:49", type: "stop" },
+      { station: "下諏訪", time: "06:54", type: "stop" },
+      { station: "上諏訪", time: "06:59", type: "stop" },
+      { station: "茅野", time: "07:06", type: "stop" },
+      { station: "小淵沢", time: "07:23", type: "stop" },
+      { station: "韮崎", time: "07:41", type: "stop" },
+      { station: "甲府", time: "07:54", type: "stop", isMajor: true },
+      { station: "石和温泉", time: "08:01", type: "stop" },
+      { station: "山梨市", time: "08:07", type: "stop" },
+      { station: "塩山", time: "08:12", type: "stop" },
+      { station: "大月", time: "08:34", type: "stop" },
+      { station: "八王子", time: "08:57", type: "stop", isMajor: true },
+      { station: "立川", time: "09:05", type: "stop" },
+      { station: "新宿", time: "09:24", type: "stop", isMajor: true },
+      { station: "東京", time: "09:40", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u8", name: "あずさ8号", sh: 7, sm: 10, eh: 9, em: 46, extB: null, extA: { station: "東京", sh: 9, sm: 46, eh: 10, em: 4, label: "東京行" }, 
+    note: "東京直通（午前10:04着）", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "松本", time: "07:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "07:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "07:29", type: "stop" },
+      { station: "上諏訪", time: "07:38", type: "stop" },
+      { station: "茅野", time: "07:45", type: "stop" },
+      { station: "小淵沢", time: "08:02", type: "stop" },
+      { station: "甲府", time: "08:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "09:22", type: "stop", isMajor: true },
+      { station: "立川", time: "09:32", type: "stop" },
+      { station: "新宿", time: "09:54", type: "stop", isMajor: true },
+      { station: "東京", time: "10:10", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u12", name: "あずさ12号", sh: 8, sm: 10, eh: 10, em: 54, extB: null, extA: { station: "東京", sh: 10, sm: 54, eh: 11, em: 10, label: "東京行" }, 
+    note: "東京直通（午前11:10着）", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "松本", time: "08:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "08:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "08:29", type: "stop" },
+      { station: "上諏訪", time: "08:38", type: "stop" },
+      { station: "茅野", time: "08:45", type: "stop" },
+      { station: "小淵沢", time: "09:02", type: "stop" },
+      { station: "甲府", time: "09:30", type: "stop", isMajor: true },
+      { station: "大月", time: "10:04", type: "stop" },
+      { station: "八王子", time: "10:28", type: "stop", isMajor: true },
+      { station: "立川", time: "10:37", type: "stop" },
+      { station: "新宿", time: "10:58", type: "stop", isMajor: true },
+      { station: "東京", time: "11:15", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u16", name: "あずさ16号", sh: 9, sm: 10, eh: 11, em: 51, extB: null, extA: { station: "東京", sh: 11, sm: 51, eh: 12, em: 8, label: "東京行" }, 
+    note: "東京直通（昼前12:08着）", cars: "12両編成", tags: ["tokyo"],
+    stops: [
+      { station: "松本", time: "09:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "09:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "09:29", type: "stop" },
+      { station: "上諏訪", time: "09:38", type: "stop" },
+      { station: "茅野", time: "09:45", type: "stop" },
+      { station: "小淵沢", time: "10:02", type: "stop" },
+      { station: "甲府", time: "10:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "11:24", type: "stop", isMajor: true },
+      { station: "立川", time: "11:34", type: "stop" },
+      { station: "新宿", time: "11:55", type: "stop", isMajor: true },
+      { station: "東京", time: "12:12", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u22", name: "あずさ22号", sh: 10, sm: 10, eh: 12, em: 44, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "10:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "10:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "10:29", type: "stop" },
+      { station: "上諏訪", time: "10:38", type: "stop" },
+      { station: "茅野", time: "10:45", type: "stop" },
+      { station: "甲府", time: "11:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "12:24", type: "stop", isMajor: true },
+      { station: "立川", time: "12:34", type: "stop" },
+      { station: "新宿", time: "12:55", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u26", name: "あずさ26号", sh: 11, sm: 10, eh: 13, em: 45, extB: null, extA: null, cars: "12両編成", tags: [],
+    stops: [
+      { station: "松本", time: "11:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "11:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "11:29", type: "stop" },
+      { station: "上諏訪", time: "11:38", type: "stop" },
+      { station: "茅野", time: "11:45", type: "stop" },
+      { station: "小淵沢", time: "12:02", type: "stop" },
+      { station: "甲府", time: "12:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "13:24", type: "stop", isMajor: true },
+      { station: "立川", time: "13:34", type: "stop" },
+      { station: "新宿", time: "13:55", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u30", name: "あずさ30号", sh: 12, sm: 10, eh: 14, em: 45, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "12:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "12:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "12:29", type: "stop" },
+      { station: "上諏訪", time: "12:38", type: "stop" },
+      { station: "茅野", time: "12:45", type: "stop" },
+      { station: "小淵沢", time: "13:02", type: "stop" },
+      { station: "甲府", time: "13:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "14:24", type: "stop", isMajor: true },
+      { station: "立川", time: "14:34", type: "stop" },
+      { station: "新宿", time: "14:55", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u34", name: "あずさ34号", sh: 13, sm: 10, eh: 15, em: 45, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "13:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "13:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "13:29", type: "stop" },
+      { station: "上諏訪", time: "13:38", type: "stop" },
+      { station: "茅野", time: "13:45", type: "stop" },
+      { station: "小淵沢", time: "14:02", type: "stop" },
+      { station: "甲府", time: "14:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "15:24", type: "stop", isMajor: true },
+      { station: "立川", time: "15:34", type: "stop" },
+      { station: "新宿", time: "15:55", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u38", name: "あずさ38号", sh: 14, sm: 50, eh: 17, em: 25, extB: { station: "白馬", sh: 13, sm: 43, eh: 14, em: 50, label: "白馬発" }, 
+    note: "大糸線白馬直通（白馬13:43発）", cars: "9両編成", tags: ["hakuba"],
+    stops: [
+      { station: "白馬", time: "13:43", type: "start", isMajor: true },
+      { station: "信濃大町", time: "14:14", type: "stop" },
+      { station: "穂高", time: "14:31", type: "stop" },
+      { station: "豊科", time: "14:37", type: "stop" },
+      { station: "松本", time: "14:50", type: "stop", isMajor: true },
+      { station: "塩尻", time: "15:00", type: "stop", isMajor: true },
+      { station: "岡谷", time: "15:09", type: "stop" },
+      { station: "上諏訪", time: "15:18", type: "stop" },
+      { station: "茅野", time: "15:24", type: "stop" },
+      { station: "甲府", time: "16:03", type: "stop", isMajor: true },
+      { station: "八王子", time: "16:54", type: "stop", isMajor: true },
+      { station: "立川", time: "17:03", type: "stop" },
+      { station: "新宿", time: "17:25", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u42", name: "あずさ42号", sh: 15, sm: 10, eh: 18, em: 4, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "15:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "15:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "15:29", type: "stop" },
+      { station: "上諏訪", time: "15:38", type: "stop" },
+      { station: "茅野", time: "15:45", type: "stop" },
+      { station: "小淵沢", time: "16:02", type: "stop" },
+      { station: "甲府", time: "16:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "17:24", type: "stop", isMajor: true },
+      { station: "立川", time: "17:34", type: "stop" },
+      { station: "新宿", time: "17:55", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u46", name: "あずさ46号", sh: 16, sm: 10, eh: 18, em: 45, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "16:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "16:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "16:29", type: "stop" },
+      { station: "上諏訪", time: "16:38", type: "stop" },
+      { station: "茅野", time: "16:45", type: "stop" },
+      { station: "小淵沢", time: "17:02", type: "stop" },
+      { station: "甲府", time: "17:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "18:24", type: "stop", isMajor: true },
+      { station: "立川", time: "18:34", type: "stop" },
+      { station: "新宿", time: "18:55", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u50", name: "あずさ50号", sh: 17, sm: 18, eh: 19, em: 50, extB: null, extA: { station: "千葉", sh: 19, sm: 50, eh: 20, em: 34, label: "千葉行" }, 
+    note: "千葉直通（錦糸町・船橋・千葉方面）", cars: "9両編成", tags: ["chiba"],
+    stops: [
+      { station: "松本", time: "17:18", type: "start", isMajor: true },
+      { station: "塩尻", time: "17:28", type: "stop", isMajor: true },
+      { station: "岡谷", time: "17:37", type: "stop" },
+      { station: "上諏訪", time: "17:46", type: "stop" },
+      { station: "茅野", time: "17:53", type: "stop" },
+      { station: "小淵沢", time: "18:10", type: "stop" },
+      { station: "甲府", time: "18:38", type: "stop", isMajor: true },
+      { station: "大月", time: "19:10", type: "stop" },
+      { station: "八王子", time: "19:32", type: "stop", isMajor: true },
+      { station: "立川", time: "19:41", type: "stop" },
+      { station: "新宿", time: "20:00", type: "stop", isMajor: true },
+      { station: "錦糸町", time: "20:19", type: "stop" },
+      { station: "船橋", time: "20:29", type: "stop" },
+      { station: "千葉", time: "20:40", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u54", name: "あずさ54号", sh: 18, sm: 40, eh: 21, em: 18, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "18:40", type: "start", isMajor: true },
+      { station: "塩尻", time: "18:50", type: "stop", isMajor: true },
+      { station: "岡谷", time: "18:59", type: "stop" },
+      { station: "上諏訪", time: "19:08", type: "stop" },
+      { station: "茅野", time: "19:15", type: "stop" },
+      { station: "小淵沢", time: "19:32", type: "stop" },
+      { station: "甲府", time: "20:00", type: "stop", isMajor: true },
+      { station: "八王子", time: "20:53", type: "stop", isMajor: true },
+      { station: "立川", time: "21:02", type: "stop" },
+      { station: "新宿", time: "21:24", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u58", name: "あずさ58号", sh: 19, sm: 30, eh: 22, em: 4, extB: null, extA: null, cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "19:30", type: "start", isMajor: true },
+      { station: "塩尻", time: "19:40", type: "stop", isMajor: true },
+      { station: "岡谷", time: "19:49", type: "stop" },
+      { station: "上諏訪", time: "19:58", type: "stop" },
+      { station: "茅野", time: "20:05", type: "stop" },
+      { station: "小淵沢", time: "20:22", type: "stop" },
+      { station: "甲府", time: "20:50", type: "stop", isMajor: true },
+      { station: "八王子", time: "21:44", type: "stop", isMajor: true },
+      { station: "立川", time: "21:54", type: "stop" },
+      { station: "新宿", time: "22:15", type: "end", isMajor: true }
+    ]
+  },
+  { 
+    id: "u60", name: "あずさ60号", sh: 20, sm: 10, eh: 22, em: 45, extB: null, extA: null, 
+    note: "上り最終定期列車（新宿行）", cars: "9両編成", tags: [],
+    stops: [
+      { station: "松本", time: "20:10", type: "start", isMajor: true },
+      { station: "塩尻", time: "20:20", type: "stop", isMajor: true },
+      { station: "岡谷", time: "20:29", type: "stop" },
+      { station: "上諏訪", time: "20:38", type: "stop" },
+      { station: "茅野", time: "20:45", type: "stop" },
+      { station: "小淵沢", time: "21:02", type: "stop" },
+      { station: "甲府", time: "21:30", type: "stop", isMajor: true },
+      { station: "八王子", time: "22:24", type: "stop", isMajor: true },
+      { station: "立川", time: "22:34", type: "stop" },
+      { station: "新宿", time: "22:55", type: "end", isMajor: true }
+    ]
+  }
 ];
 
 let currentDirection = 'down';
@@ -1663,30 +2234,41 @@ function openModal(item) {
   badge.textContent = isDown ? '下り（松本方面）' : '上り（東京方面）';
   badge.style.background = isDown ? 'var(--azusa-violet)' : 'var(--azusa-blue)';
 
-  const points = [];
-  if (item.extB) {
-    points.push({ station: item.extB.station, time: `${String(item.extB.sh).padStart(2,'0')}:${String(item.extB.sm).padStart(2,'0')}`, type: 'start' });
-    points.push({ station: isDown ? '新宿' : '松本', time: `${String(item.extB.eh).padStart(2,'0')}:${String(item.extB.em).padStart(2,'0')}`, type: 'mid' });
-  } else {
-    points.push({ station: isDown ? '新宿' : '松本', time: `${String(item.sh).padStart(2,'0')}:${String(item.sm).padStart(2,'0')}`, type: 'start' });
-  }
-
-  if (item.extA) {
-    points.push({ station: isDown ? '松本' : '新宿', time: `${String(item.eh).padStart(2,'0')}:${String(item.eh ? item.em : 0).padStart(2,'0')}`, type: 'mid' });
-    points.push({ station: item.extA.station, time: `${String(item.extA.eh).padStart(2,'0')}:${String(item.extA.em).padStart(2,'0')}`, type: 'end' });
-  } else {
-    points.push({ station: isDown ? '松本' : '新宿', time: `${String(item.eh).padStart(2,'0')}:${String(item.em).padStart(2,'0')}`, type: 'end' });
-  }
-
-  timeline.innerHTML = points.map(p => `
-    <div class="timeline-step">
-      <div class="timeline-bullet ${p.type}">${p.type === 'start' ? '発' : p.type === 'end' ? '着' : '経'}</div>
-      <div class="timeline-detail">
-        <span class="timeline-station">${p.station}</span>
-        <span class="timeline-time">${p.time}</span>
+  const stopsList = item.stops || [];
+  
+  timeline.innerHTML = `
+    <div class="timeline-header-wrap">
+      <div class="timeline-header-title">
+        <span>🚉</span>
+        <span>途中停車駅・発着時刻</span>
       </div>
+      <span class="timeline-count-badge">全 ${stopsList.length} 駅</span>
     </div>
-  `).join('');
+    <div class="timeline-scroll-container">
+      ${stopsList.map((p, idx) => {
+        const isStart = idx === 0;
+        const isEnd = idx === stopsList.length - 1;
+        const bulletText = isStart ? '発' : isEnd ? '着' : '●';
+        const bulletClass = isStart ? 'start' : isEnd ? 'end' : 'stop';
+        const timeLabel = isStart ? '発' : isEnd ? '着' : '発';
+        return `
+          <div class="timeline-step">
+            <div class="timeline-bullet ${bulletClass}">${bulletText}</div>
+            <div class="timeline-detail">
+              <div class="timeline-station-wrap">
+                <span class="timeline-station">${p.station}</span>
+                ${p.isMajor ? '<span class="station-major-pill">主要駅</span>' : ''}
+              </div>
+              <div class="timeline-time-wrap">
+                <span class="timeline-time">${p.time}</span>
+                <span class="timeline-time-label">${timeLabel}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 
   // Total Duration
   const startH = item.extB ? item.extB.sh : item.sh;
